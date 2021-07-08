@@ -19,6 +19,19 @@ module.exports = {
     index(req, res) {
         try {
             const users = User.find()
+            if(req.query.page && req.query.results){
+                const page = Number(req.query.page)
+                const limit = Number(req.query.results)
+                const skipIndex = (page - 1) * limit
+                let myUsers = []
+                for (let index = skipIndex; index < users.length; index++) {
+                    if(myUsers.length < limit){
+                        myUsers = [...myUsers, users[index]]  
+                    }
+                }                  
+                                
+                return res.json(myUsers)
+            }
             return res.json(users)
         }
         catch {
